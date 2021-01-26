@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2011-2014 BitPay
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<extension version="2.6" type="plugin" group="vmpayment" method="upgrade">
+    <name>VM Payment - BitPay</name>
+    <creationDate>July 27 2012</creationDate>
+    <author>BitPay</author>
+    <authorUrl>http://www.bitpay.com</authorUrl>
+    <copyright>Copyright</copyright>
+    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+    <version>1.0.0</version>
+    <description>BitPay payment plugin</description>
+    <files>
+        <filename plugin="bitpay">bitpay.php</filename>
+        <folder>language</folder>
+    </files>
+    <params addpath="/administrator/components/com_virtuemart/elements">
+
+        <param name="merchant_apikey" type="text"  label="VMPAYMENT_BITPAY_API_KEY_LABEL" description="VMPAYMENT_BITPAY_API_KEY_LABEL" />
+        <param name="network" type="list" default="live" label="VMPAYMENT_BITPAY_NETWORK_LABEL"
+           description="VMPAYMENT_BITPAY_NETWORK_LABEL">
+            <option value="live">VMPAYMENT_BITPAY_NETWORK_LABEL_LIVE</option>
+            <option value="test">VMPAYMENT_BITPAY_NETWORK_LABEL_TEST</option>
+        </param>
+        <param name="speed" type="list" default="low" label="VMPAYMENT_BITPAY_SPEED_LABEL"
+           description="VMPAYMENT_BITPAY_SPEED_LABEL">
+            <option value="low">VMPAYMENT_BITPAY_SPEED_LABEL_LOW</option>
+            <option value="medium">VMPAYMENT_BITPAY_SPEED_LABEL_MEDIUM</option>
+            <option value="high">VMPAYMENT_BITPAY_SPEED_LABEL_HIGH</option>
+        </param>
+    </params>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                    <field name="merchant_apikey" type="text" label="VMPAYMENT_BITPAY_API_KEY_LABEL" description="VMPAYMENT_BITPAY_API_KEY_LABEL"/>
+
+                    <field name="network" type="list" default="live" label="VMPAYMENT_BITPAY_NETWORK_LABEL"
+                       description="VMPAYMENT_BITPAY_NETWORK_LABEL">
+                        <option value="live">VMPAYMENT_BITPAY_NETWORK_LABEL_LIVE</option>
+                        <option value="test">VMPAYMENT_BITPAY_NETWORK_LABEL_TEST</option>
+                    </field>
+
+                    <field name="speed" type="list" default="low" label="VMPAYMENT_BITPAY_SPEED_LABEL"
+                       description="VMPAYMENT_BITPAY_SPEED_LABEL">
+                        <option value="low">VMPAYMENT_BITPAY_SPEED_LABEL_LOW</option>
+                        <option value="medium">VMPAYMENT_BITPAY_SPEED_LABEL_MEDIUM</option>
+                        <option value="high">VMPAYMENT_BITPAY_SPEED_LABEL_HIGH</option>
+                    </field>
+                    <field name="payment_logos" type="vmfiles"  multiple="true" label="VMPAYMENT_BITPAY_LOGO"
+                      description="VMPAYMENT_BITPAY_LOGO"
+                      directory="/images/stories/virtuemart/payment"
+                      default="default" hide_default="1" hide_none="1"
+                      stripext="0" exclude="^_"/>
+            </fieldset>
+        </fields>
+    </config>
+</extension>

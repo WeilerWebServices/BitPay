@@ -1,0 +1,96 @@
+menu:
+  API: /api/
+  Docs: /guide/
+  Github: https://github.com/bitpay/bitcore
+  Forum: http://labs.bitpay.com/
+  Playground: http://bitcore.io/playground
+
+doc_sidebar:
+  Home:
+    Get Started: index.html
+    Contributing: contributing.html
+
+  Bitcore:
+    Address: address.html
+    Block: block.html
+    Browser: browser.html
+    Crypto: crypto.html
+    Encoding: encoding.html
+    HD Keys: hierarchical.html
+    Networks: networks.html
+    Private Key: privatekey.html
+    Public Key: publickey.html
+    Script: script.html
+    Transaction: transaction.html
+    Unit: unit.html
+    Unspent Output: unspentoutput.html
+    URI: uri.html
+
+  Payment Protocol:
+    Usage: module/payment-protocol/index.html
+
+  Peer-to-Peer:
+    Overview: module/p2p/index.html
+    Messages: module/p2p/messages.html
+    Peer: module/p2p/peer.html
+    Pool: module/p2p/pool.html
+
+  Message Signing and Verification:
+    Overview: module/message/index.html
+
+  Mnemonic:
+    Overview: module/mnemonic/index.html
+
+  ECIES:
+    Overview: module/ecies/index.html
+
+  Channel:
+    Overview: module/channel/index.html
+
+  Explorers:
+    Overview: module/explorers/index.html
+
+api_sidebar:
+
+  Bitcore:
+    Address: address.html
+    Block: block.html
+    BlockHeader: blockheader.html
+    HDPrivateKey: hdprivatekey.html
+    HDPublicKey: hdpublickey.html
+    Networks: networks.html
+    PrivateKey: privatekey.html
+    PublicKey: publickey.html
+    Unit: unit.html
+    Uri: uri.html
+    Crypto/Point: crypto/point.html
+    Script: script/script.html
+    Transaction: transaction/transaction.html
+    Transaction/UnspentOutput: transaction/unspentoutput.html
+    Transaction/Signing: transaction/sighash.html
+
+  Peer-to-Peer:
+    Inventory: module/p2p/inventory.html
+    Messages: module/p2p/messages/index.html
+    Peer: module/p2p/peer.html
+    Pool: module/p2p/pool.html
+
+  Message Signing and Verification:
+    Overview: module/message/message.html
+
+  Mnemonic:
+    Mnemonic: module/mnemonic/mnemonic.html
+
+  Channel:
+    Consumer: module/channel/consumer.html
+    Provider: module/channel/provider.html
+    Transactions/Commitment: module/channel/transactions/commitment.html
+    Transactions/Payment: module/channel/transactions/payment.html
+    Transactions/Refund: module/channel/transactions/refund.html
+
+  Explorers:
+    Insight: module/explorers/insight.html
+
+google_analytics: UA-24163874-2
+twitter: bitpay
+github: bitpay/bitcore

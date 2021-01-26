@@ -1,0 +1,18 @@
+{
+  "name" : "classtool",
+  "description" : "Class like behavior composition, but better",
+  "version" : "1.0.1",
+  "author" : "Stephen Pair <stephen@bitpay.com>",
+  "main" : "./index",
+  "keywords" : [
+    "class",
+    "behavior"
+  ],
+  "repository" : {
+    "type" : "git",
+    "url" : "http://github.com/gasteve/classtool.git"
+  },
+  "scripts" : {},
+  "devDependencies" : {},
+  "license" : "MIT"
+}

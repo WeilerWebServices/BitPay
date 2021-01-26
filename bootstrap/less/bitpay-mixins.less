@@ -1,0 +1,75 @@
+// mixins
+
+.dark-bg (){ background-color: @dark-bg-color; }
+
+//text heirarchy on dark
+.primary-text-on-dark()     {  color: @primary-light-color; }
+.secondary-text-on-dark()   {  color: @secondary-light-color; }
+.tertiary-text-on-dark()    {  color: @tertiary-light-color; }
+.quaternary-text-on-dark()  {  color: @quaternary-light-color; }
+.quinary-text-on-dark()     {  color: @quinary-light-color; }
+
+.mid-bg (){ background-color: @mid-bg-color; }
+
+//text heirarchy on mid
+.primary-text-on-mid()     {  color: @primary-dark-color; }
+.secondary-text-on-mid()   {  color: @secondary-dark-color; }
+.tertiary-text-on-mid()    {  color: @tertiary-dark-color; }
+.quaternary-text-on-mid()  {  color: @quaternary-dark-color; }
+.quinary-text-on-mid()     {  color: @quinary-dark-color; }
+
+
+.light-bg (){ background-color: @light-bg-color; }
+
+//text heirarchy on light
+.primary-text-on-light()     {  color: @primary-dark-color; }
+.secondary-text-on-light()   {  color: @secondary-dark-color; }
+.tertiary-text-on-light()    {  color: @tertiary-dark-color; }
+.quaternary-text-on-light()  {  color: @quaternary-dark-color; }
+.quinary-text-on-light()     {  color: @quinary-dark-color; }
+
+
+/*
+//colors
+  h2        { .primary-text-on-light; }
+  .lead     { .tertiary-text-on-light; }
+  h3        { .secondary-text-on-light; }
+  p         { .tertiary-text-on-light; }
+  a         { .quinary-text-on-light; }
+
+.dark {
+ //color - dark on light
+  .dark-bg;
+  h2    { .primary-text-on-dark; }
+  .lead { .tertiary-text-on-dark; }
+  h3    { .secondary-text-on-dark; }
+  p     { .quaternary-text-on-dark; }
+  a     { .quinary-text-on-dark; }
+}
+
+.mid {
+  .mid-bg;
+  h2        { .primary-text-on-light; }
+  .lead     { .tertiary-text-on-light; }
+  h3        { .secondary-text-on-light; }
+  p         { .quaternary-text-on-light; }
+  a         { .quinary-text-on-light; }
+}
+*/
+
+// replace bootstrap's Retina images mixin
+
+.img-retina(@file-1x; @file-2x; @width-1x; @height-1x) {
+  background-image: url("@{file-1x}");
+
+  @media
+  only screen and (-webkit-min-device-pixel-ratio: 2),
+  only screen and (   min--moz-device-pixel-ratio: 2),
+  only screen and (     -o-min-device-pixel-ratio: 2/1),
+  only screen and (        min-device-pixel-ratio: 2),
+  only screen and (                min-resolution: 192dpi),
+  only screen and (                min-resolution: 2dppx) {
+    background-image: url("@{file-2x}");
+    background-size: 100%;
+  }
+}

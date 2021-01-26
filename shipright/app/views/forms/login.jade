@@ -1,0 +1,15 @@
+form(action="/login", method="post")
+  input(type="hidden", name="next", value="#{next}")
+
+  .form-group
+    label(for="username") Username
+    input.form-control(type="text", name="username", placeholder="Username")
+
+  .form-group
+    label(for="password") Password
+    input.form-control(type="password", name="password")
+
+  .pull-right
+    a.btn.btn-default(href="/auth/google")
+      i.fa.fa-google-plus
+    button.btn.btn-default(type="submit") Log In &raquo;

@@ -1,0 +1,214 @@
+logo-width = 140px
+logo-height = 41px
+logo-small-width = 107px
+logo-small-height = 32px
+logo-medium-width = 142px
+logo-medium-height = 41px
+
+#header.invert
+  background: color-black2
+  border-bottom: 1px solid #464646
+
+#header.invert #logo
+  width: logo-width
+  height: logo-height
+  background-image: url("images/logo-invert.png")
+  background-size: logo-width logo-height
+  @media mq-mobile
+    background-size: logo-medium-width logo-medium-height
+    width: logo-medium-width
+    height: logo-medium-height
+  @media mq-small
+    background-size: logo-small-width logo-small-height
+    width: logo-small-width
+    height: logo-small-height
+
+#header
+  background: #fff
+  border-bottom: 1px solid #ccc
+  font-family: font-title
+  padding-top: 30px
+  padding-bottom: 30px
+  position: relative
+  @media mq-small
+    padding-top: 20px
+    padding-bottom: 20px
+
+#logo-wrap
+  text-align: center
+  position: relative
+  @media mq-normal
+    float: left
+
+#logo
+  hide-text()
+  width: logo-width
+  height: logo-height
+  background-image: url("images/logo.png")
+  display: block
+  transition:0.5s
+
+#main-nav-toggle
+  float: right
+  width: logo-height
+  height: @width
+  text-align: center
+  color: #999
+  cursor: pointer
+  position: absolute
+  top: 0
+  bottom: 0
+  right: 0
+  margin: auto
+  user-select: none
+  font-size: 24px
+  &:before
+    @extend $icon-font
+    square(@font-size)
+    absolute-center()
+    content: "\f0c9"
+  &:hover, &:active
+    color: #555
+  @media mq-normal
+    display: none
+  @media mq-small
+    width: logo-small-height
+
+
+#main-nav
+  &.on
+    display: block
+  @media mq-mobile
+    position: absolute
+    top: 100%
+    left: 0
+    right: 0
+    margin-top: -21px
+    border-bottom: 1px solid color-black3
+    background: color-black2
+    display: none
+    z-index: 1
+  @media mq-normal
+    float: right
+    display: block
+    margin: 0
+    margin-top:8px
+
+#main-nav-list
+  @media mq-normal
+    float: left
+
+.main-nav-item
+  margin: 10px
+  @media mq-normal
+    float: left
+    margin: 0 15px
+
+.main-nav-link.docs:hover
+  background-position:0 -29px
+
+.main-nav-link.api:hover
+  background-position:0 -25px
+
+.main-nav-link.forum:hover
+  background-position:0 -29px
+
+.main-nav-link.playground:hover
+  background-position:0 -26px
+
+
+.main-nav-link.playground
+  background-image: url('images/playground-icon.svg')
+  background-repeat:no-repeat
+  background-position:0 8px
+  padding-left:25px
+  @media mq-mobile
+    background-image:none
+
+
+
+.main-nav-link.forum
+  background-image: url('images/doc-icon1.svg')
+  background-repeat:no-repeat
+  background-position:0 5px
+  padding-left:25px
+  @media mq-mobile
+    background-image:none
+
+.main-nav-link.api
+  background-image: url('images/api-icon.svg')
+  background-repeat:no-repeat
+  background-position:0 7px
+  padding-left:25px
+  @media mq-mobile
+    background-image:none
+
+.main-nav-link.github:hover
+  background-position:0 -21px
+
+.main-nav-link.github
+  background-image: url('images/githubcat-icon.svg')
+  background-repeat:no-repeat
+  background-position:0 7px
+  padding-left:31px
+  @media mq-mobile
+    background-image:none
+
+.main-nav-link.docs
+  background-image: url('images/doc-icon.svg')
+  background-repeat:no-repeat
+  background-position:0 5px
+  padding-left:25px
+  @media mq-mobile
+    background-image:none
+
+.main-nav-link
+  display: block
+  font-weight: bold
+  text-transform: uppercase
+  text-decoration: none
+  color: color-grey
+  text-align: center
+  padding: 10px 15px
+  line-height: 1
+  transition: 0.2s
+  transition-property:color
+  @media mq-normal
+    padding: 10px 0
+  &:hover, &:active
+    color: color-grey1
+    @media mq-mobile
+      background: color-blue
+      color: #fff
+      border-radius: 4px
+
+$header-btn
+  float: left
+  display: none
+  width: 18px
+  height: @width
+  text-align: center
+  padding: 8px
+  line-height: @width
+  cursor: pointer
+  color: #999
+  transition: color 0.2s
+  text-decoration: none
+  &:hover
+    color: color-blue
+  &:before
+    font-size: @width
+  @media mq-normal
+    display: block
+
+#github-btn
+  @extend $header-btn
+  &:before
+    @extend $icon-font
+    content: "\f113"
+
+#search-btn
+  @extend $header-btn
+  &:before
+    @extend $icon-font
+    content: "\f002"

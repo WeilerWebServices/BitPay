@@ -1,0 +1,110 @@
+extends layout
+
+block prepend projectHeader
+  a.btn.btn-default.pull-right(href="#modal-fork", data-toggle="modal")
+    i.fa.fa-code-fork
+    |  fork &raquo;
+
+block content
+
+  include partials/project-header
+
+  pre http://#{config.http.host}:#{config.http.port}/#{project._owner.slug}/#{project.slug}
+  
+  pre #{project._id}
+
+  .dropdown
+    a.btn.btn-default(href="/#{project._owner.slug}/#{project.slug}/branches", data-toggle="dropdown") 
+      i.fa.fa-code-fork
+      |  branch: #{branch} 
+      i.fa.fa-caret-down
+    ul.dropdown-menu(role="menu")
+      each availableBranch in branches
+        li(class=((branch == availableBranch) ? 'active' : undefined))
+          a(href="/#{project._owner.slug}/#{project.slug}/tree/#{availableBranch}") #{availableBranch}
+  p
+    strong Latest:
+    |  #{commits[0].id}
+
+  hr
+
+  ul.nav.nav-tabs.tabs-right#project-tabs
+    li.active
+      a(href="#code", data-toggle="tab")
+        i.fa.fa-code
+        |  Code
+    li
+      a(href="#issues", data-toggle="tab")
+        i.fa.fa-warning
+        |  Issues
+    li
+      a(href="#docks", data-toggle="tab")
+        i.fa.fa-users
+        |  Docks
+    li
+      a(href="#network", data-toggle="tab")
+        i.fa.fa-code-fork
+        |  Network
+
+  .tab-content
+    .tab-pane.active#code
+      h2 Commits
+      ul.nav.nav-list
+      each commit in commits
+        include partials/commit-row
+
+      h2 Code
+      table.table
+        each file in files
+          tr
+            td
+              a(href="/#{project._owner.slug}/#{project.slug}/blob/#{branch}/#{file.name}") #{file.name}
+            td
+              a(href="") #{file.commit.msg}
+            td
+              a(href="") #{moment(file.commit.timestamp).fromNow()}
+
+      h2 README.md
+      .readme !{project.readme}
+
+    .tab-pane#issues
+      a.btn.btn-default.pull-right(href="/#{project._owner.slug}/#{project.slug}/issues/new") Create Issue &raquo;
+      h2 Issues
+      table.table
+        each issue in issues
+          include partials/issue
+
+    .tab-pane#docks
+      h2 Docks
+      table.table
+        each dock in docks
+          tr
+            td #{dock.id}
+            td #{dock.title}
+            
+    .tab-pane#network
+      h2 Network
+      ul.nav.nav-list
+      each fork in forks
+        - var project = fork
+        li
+          include partials/project-name
+
+  form.modal.fade#modal-fork(action="/projects", method="post")
+    input(type="hidden", name="fromProjectID", value="#{project._id}")
+
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type="button", data-dismiss="modal") &times;
+          h4.modal-title Fork #{project.name} to...
+        .modal-body
+          .form-group
+            label(for="name") Name
+            input.form-control(type="text", name="name", placeholder="Name of Project", value="#{project.name}")
+          .form-group
+            label(for="description") Description
+            textarea.form-control(type="text", name="description", placeholder="Technical details") #{project.description}
+        .modal-footer
+          button.btn.btn-default(type="button", data-dismiss="modal") Close
+          button.btn.btn-primary(type="submit") Continue &raquo;

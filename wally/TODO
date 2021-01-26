@@ -1,0 +1,5 @@
+
+Security:
+	do not pass passphrase via command line (might be in shell history)
+	encrypt+MAC, not just encrypt
+

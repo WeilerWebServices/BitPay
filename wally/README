@@ -1,0 +1,58 @@
+
+Bitcoin SPV[1] wallet client.
+
+[1] Simplified Payment Verification, aka lightweight
+
+Command line summary
+--------------------
+Usage: node ./bin/wally [options] COMMAND [command parameters]
+
+Options:
+  -f, --file  Load/store wallet to/from encrypted JSON file
+  -P, --pass  Passphrase                                     [required]
+
+
+Theory of operation
+-------------------
+All operation revolves around an internal database, which is modified
+via execution of a command operation:
+	1. wally reads wallet state file (JSON). Default "walletdb.aes".
+	2. wally executes command given on command line,
+	   updating wallet state.
+	3. wally writes wallet state file, overwriting
+	   previous version.
+
+"wallet state" is anything involving the given wallet being
+built, examined or modified.
+
+A new wallet is created using the "init" command.
+
+Dependencies
+------------
+node.js			-- http://nodejs.org/
+
+node modules ("npm install $module_name"):
+
+
+wally command summary
+----------------------
+
+clean
+	Remove wallet state database, and any associated
+	temporary files.
+
+dump
+	Inspect wallet state database.
+
+help
+	List this command summary.
+
+init [network]
+	Initialize new wallet state database.  Optionally
+	specify network for new wallet (mainnet/livenet or
+	testnet)
+
+key.new
+	Generate a new private key (and associated bitcoin
+	address).
+

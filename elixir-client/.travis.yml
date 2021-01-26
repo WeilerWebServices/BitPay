@@ -1,0 +1,7 @@
+sudo: false
+language: elixir
+otp_release:
+  - 17.4
+after_success:
+    - mix compile 
+    - mix coveralls.travis

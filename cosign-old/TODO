@@ -1,0 +1,14 @@
+
+BIP 10 support
+
+Decode and display transaction, in a way that assists human
+verification of what they are signing.  MITM mitigation.
+
+Errors are thrown via js exception.  This may be considered ugly,
+dumping a lot of information that may obscure one useful nugget.
+At a minimum, someone should confirm that cosign exit status is zero
+normally, but non-zero when an exception is thrown.
+
+With all parameters optional, optimist module does not appear to
+provide a way to service "--help" style requests.
+

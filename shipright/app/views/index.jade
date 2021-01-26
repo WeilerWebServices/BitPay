@@ -1,0 +1,51 @@
+extends layout
+
+block content
+  if (user)
+    h1 Welcome, #{user.username}!
+
+    .row
+      .col-md-8
+        h2 Activity
+        .nav-group
+          each activity in activities
+            a.list-group-item(href="/activities/#{activity._id}") #{activity._id}
+          else
+            h3 No activity (not yet implemented).
+
+      .col-md-4
+        h2
+          a.btn.btn-default.pull-right(href="/projects/new") Create &raquo;
+          a(href="/projects") Projects
+        .nav-group
+          each project in projects
+            a.list-group-item(href="/#{project._owner.slug}/#{project.slug}") #{project._owner.slug}/#{project.slug}
+      
+  else
+    .jumbotron
+
+      img.pull-left.size-10.pad-right(src="/img/shipright.svg")
+
+      h1 shipright.
+      p build and ship better software, <em>together</em>.
+
+    .row
+      .col-md-4
+        h2
+          a(href="/projects") Projects
+        ul.nav-group
+          each project in projects
+            li.list-group-item
+              a(href="/#{project._owner.slug}/#{project.slug}") #{project._owner.slug}/#{project.slug}
+      .col-md-4
+        h2 Recently...
+        ul.nav.nav-list
+          each activity in activities
+            li
+              a(href="/activities/#{activity._id}") #{activity._id}
+      .col-md-4
+        h2 Already registered?
+        include forms/login
+
+    .row
+      hr

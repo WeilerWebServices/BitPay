@@ -1,0 +1,23 @@
+<ion-view title="Cart">
+  <ion-content class="padding">
+    <h3 ng-hide="items">Your cart is empty</h3>
+    <ion-list>
+      <ion-item ng-repeat="item in items" type="item-text-wrap">
+        {{item.name}}
+        <span class="item-note">
+          ${{item.price}}
+        </span>
+      </ion-item>
+    </ion-list>
+    <h3 ng-show="items" style="text-align: right;">Total: ${{total}}</h3>
+    <a ng-if="hasWallet" class="button button-block button-positive ion-bag" ng-show="items" ng-click="customCheckout()">
+      Pay with Bitcoin
+    </a>
+    <a ng-if="!hasWallet" class="button button-block button-positive ion-bag" ng-show="items" ng-disabled="{{!hasWallet}}">
+      No Bitcoin Wallet Available
+    </a>
+    <button class="button button-block button-stable ion-close" ng-show="items" ng-click="removeAll()">
+      Remove all
+    </button>
+  </ion-content>
+</ion-view>

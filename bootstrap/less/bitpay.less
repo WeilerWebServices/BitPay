@@ -1,0 +1,231 @@
+//miscellaneous styles that don't yet need a separate file
+
+// ---- start universal ----
+
+.bitpay-logo {
+  .img-retina("/img/logo.png", "/img/logo_x2.png", 113px, 44px);
+  .text-hide();
+  width: 113px;
+  height: 44px;
+  margin-top: 6px;
+  margin-left: 30px;
+  opacity: .93;
+  .transition(opacity @base-transition-time @primary-transition-timing-function);
+  
+    &:hover {
+    opacity: 1;
+    .text-hide();
+  }
+}
+
+// ---- end universal ----
+
+
+// ---- start blocks ----
+
+//blocks are 100% horizontal width, self-contained content areas. 
+
+//<section class="section-block">
+
+.section-block {
+  padding: (3 * @line-height-computed) 0;
+}
+
+.unit {
+  margin-top: 2 * @line-height-computed;
+}
+
+
+.section-block-header {
+  margin-bottom: @line-height-computed;
+  .text-center;
+}
+
+//<small class="section-block-header-topic">
+.section-block-header-topic {
+  text-transform: uppercase;
+}
+
+.section-block-highlight {
+  border: solid #eceeee;
+  border-width: 1px 0;
+  background-color: #fafafa;
+}
+
+// ---- end blocks ----
+
+
+// ---- start colors ----
+
+
+
+.dark {
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+
+  @inner-color: @primary-brand-color;
+  @outer-color: @dark-brand-color;
+
+  background-color: @inner-color;
+  background-image: -webkit-radial-gradient(bottom center, circle, @inner-color, @outer-color);
+  background-image:         radial-gradient(bottom center, circle, @inner-color, @outer-color);
+  background-repeat: no-repeat;
+
+  color: @tertiary-light-color;
+
+  .navbar {
+    .navbar-default();
+    .active a {
+      text-shadow: 0 0 1px rgba(255, 255, 255, 0.79);
+    }
+  }
+
+  .primary-text {
+    margin-top: 0;
+  }
+
+  .primary-text, .h1, h1, .section-block-header-topic {
+    color: @primary-light-color;
+  }
+
+  .secondary-text, .h2, h2, .h3, h3, .h4, h4, .h5, h5, .h6, h6 {
+    color: @primary-light-color;
+  }
+
+  .lead, p {
+    color: @tertiary-light-color;
+  }
+
+  .overlay {
+    background-color: fade(@darkest-brand-color, 30%);
+  }
+
+  a {
+    color: @primary-light-color;
+  }
+
+  .list-group-item {
+    background-color: transparent;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .panel-body {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .panel {
+    background-color: @darkest-brand-color;
+    background-color: fade(@darkest-brand-color, 50%);
+    .text-center;
+  }
+
+  .panel-heading {
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+}
+
+// ---- end colors ----
+
+
+.navbar {
+  padding-top: @line-height-computed * 1;
+  margin-bottom: 0;
+}
+.navbar-collapse {
+  &.collapsing, &.collapse.in {
+    font-weight: 500;
+    .text-center;
+    box-shadow: none;
+    //box-shadow: inset 0 1px 0 rgba(255,255,255,0.1),inset 0 -1px 0 rgba(255,255,255,0.1);
+  }
+  .nav>li>a {
+    font-size: @font-size-base * .9;
+  }
+}
+
+.jumbotron {
+  h1, .h1, .primary-text  {
+      font-size: (@font-size-base * 2.5);
+  }
+}
+
+@media (max-width: @screen-xs-max) { 
+  .jumbotron {
+    .text-center;
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/*
+ h2, .lead {
+    margin-bottom: 2.5 * @line-height-computed;
+  }
+*/
+
+  .lead {
+    font-size: 1.3 * @font-size-base;
+  }
+
+.btn, .nav {
+  text-transform: uppercase;
+}
+
+.nav>li>a, .btn {
+  .transition(color @base-transition-time @primary-transition-timing-function);
+}
+
+.btn {
+  .transition(color @base-transition-time @primary-transition-timing-function, background-color @base-transition-time @primary-transition-timing-function, border-color @base-transition-time @primary-transition-timing-function;);
+}
+
+.btn {
+  padding: 1em 2em;
+  margin-top: .3em;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+p {
+  margin-bottom: @line-height-computed;
+}
+
+.lead {
+  line-height: @line-height-base;
+}
+
+.footer-link {
+  display: inline-block;
+  margin: 0 2em 1em;
+  color: #9a94ac;
+
+  &.active{
+    color: @brand-primary;
+  }
+}
+
+#instantclick-bar {
+  background: @brand-primary;
+}
+
+.separator {
+  width: 3%;
+}
+
+.subtle {
+  opacity: .5;
+}
+
+.compress {
+  line-height: 1.6;
+  font-size: 90%;
+}
+
+.btn-transparent {
+  background-color: transparent;
+}

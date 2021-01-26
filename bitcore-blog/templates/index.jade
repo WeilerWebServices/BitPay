@@ -1,0 +1,26 @@
+extends layout
+
+block content
+  include author
+  each article in articles
+    article.article
+      header
+        p.date
+          span= moment.utc(article.date).format('DD. MMMM YYYY')
+        h2
+          a(href=article.url)= article.title
+        p.author
+          mixin author(article.metadata.author)
+      section.content!= typogr(article.html).typogrify()
+
+block prepend footer
+  div.nav
+    if prevPage
+      a(href=prevPage.url) « Newer
+    else
+      a(href='/blog/archive.html') « Archives
+    if nextPage
+      a(href=nextPage.url) Next page »
+
+
+

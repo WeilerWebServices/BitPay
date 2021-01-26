@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Multi-signature address (P2SH) paper wallet</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style TYPE="text/css">
+      .break {page-break-before: always}
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript" src="bitcore.js"></script>
+    <script type="text/javascript" src="qrcode.js"></script>
+    <script type="text/javascript" src="jquery.js"></script>
+
+   <link href="css/bootstrap.min.css" rel="stylesheet">
+
+
+   <div class="container">
+      <div class="page-header">
+        <h1>Multi-signature address (P2SH) paper wallet using <a href="http://bitcore.io">bitcore</a></h1>
+        <h3>
+          by <a href="https://twitter.com/maraoz">@maraoz</a>,
+          inspired by work from <a href="https://twitter.com/federicobond">@federicobond</a>.
+           - <a href="https://github.com/maraoz/multipaper/" class="btn btn-success">
+            Check the source
+            <span class="glyphicon glyphicon-search"></span>
+          </a>
+        </h3>
+        <h2><span class="label label-warning">WARNING</span> 
+          This is experimental software, don't use to store actual bitcoins</h2>
+      </div>
+
+      <div class="row">
+        <div id='controls' class="col-md-1">
+          <h2><span class="glyphicon glyphicon-lock"></span></h2>
+          <button id="gen" class="btn btn-info"><span class="glyphicon glyphicon-retweet"></span></button>
+          <br />
+          <br />
+          <button id="net" class="btn btn-success"><span class="glyphicon glyphicon-transfer"></span></button>
+          <br />
+          <br />
+          <button id="print" class="btn" disabled="true"><span class="glyphicon glyphicon-print"></span></button>
+        </div>
+        <div class="col-md-7">
+          <h2> Key pairs </h2>
+          <div id="private1"></div>
+          <div class="row">
+            <div class="col-md-4">
+              <div id="privQR1"></div>
+            </div>
+            <div class="col-md-4 pull-right">
+              <div id="pubQR1"></div>
+            </div>
+          </div>
+          <div id="public1" class=""></div>
+          <hr />
+          <div class="break"></div>
+
+          <div id="private2"></div>
+          <div class="row">
+            <div class="col-md-4">
+              <div id="privQR2"></div>
+            </div>
+            <div class="col-md-4 pull-right">
+              <div id="pubQR2"></div>
+            </div>
+          </div>
+          <div id="public2" class=""></div>
+          <hr />
+          <div class="break"></div>
+
+          <div id="private3"></div>
+          <div class="row">
+            <div class="col-md-4">
+              <div id="privQR3"></div>
+            </div>
+            <div class="col-md-4 pull-right">
+              <div id="pubQR3"></div>
+            </div>
+          </div>
+          <div id="public3" class=""></div>
+          <div class="break"></div>
+        </div>
+
+
+
+
+
+
+
+
+
+        <div class="col-md-4">
+          <h2>P2SH Address (<span id="netname"></span>)</h2>
+          <div id="pubQR"></div>
+          <div id="public"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="index.js"></script>
+  </body>
+</html>

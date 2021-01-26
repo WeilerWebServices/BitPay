@@ -1,0 +1,416 @@
+#!/usr/bin/env node
+// MIT/X11-like license.  See LICENSE.txt.
+// Copyright 2013 BitPay, Inc.
+
+var CLIENT_VERSION = "0.1";
+var fs = require('fs');
+var util = require('util');
+var program = require('commander');
+var Block = require('bitcore/Block').class();
+var CoinConst = require('bitcore/const');
+var HeaderDB = require('../HeaderDB').class();
+var KeyModule = require('bitcore/Key');
+var coinUtil = require('bitcore/util/util');
+var Address = require('bitcore/Address').class();
+var Wallet = require('bitcore/Wallet').class();
+var WalletKey = require('bitcore/WalletKey').class();
+var SINKey = require('bitcore/SINKey').class();
+var Parser = require('bitcore/util/BinaryParser').class();
+
+program
+	.version(CLIENT_VERSION)
+	.option('-f, --file [wallet]', 'Load/store wallet data in this file [walletdb.aes]', 'walletdb.aes')
+	.option('-p, --peers [peerdb]', 'JSON file containing network peers [peerdb.json]', 'peerdb.json')
+	.option('-H, --headers [hdrdb]', 'Binary blockchain header db [hdrdb.dat]', 'hdrdb.dat')
+	.option('-P, --pass [passphrase]', 'AES wallet passphrase')
+	.parse(process.argv);
+
+var walletdb_fn = program.file;
+var peerdb_fn = program.peers;
+var hdrdb_fn = program.headers;
+
+// Our empty wallet defaults
+var wallet = new Wallet();
+wallet.datastore.client = 'wally';
+wallet.datastore.client_version = CLIENT_VERSION;
+wallet.datastore.network = 'livenet';
+
+var hdrdb = undefined;
+var peerdb = undefined;
+var network = undefined;
+var syncState = 'init';		// empty headerdb, no genesis block
+
+function list_commands()
+{
+	var s = "wally command summary:\n";
+	s += "clean\t\tRemove transaction state database\n";
+	s += "dump\t\tInspect internal transaction state\n";
+	s += "help\t\tList this command summary\n";
+	s += "init [network]\tInitialize new transaction state database\n";
+	s += "key.new\t\tGenerate new ECDSA private key (bitcoin address)\n";
+	s += "sin.new\t\tGenerate new ECDSA private key (SIN identity)\n";
+	console.log(s);
+}
+
+// current time, in seconds
+function curtime()
+{
+	return Math.round(Date.now() / 1000);
+}
+
+function remove_datastore(callback)
+{
+	fs.exists(walletdb_fn, function(exists) {
+		if (exists)
+			fs.unlink(walletdb_fn, function(err) {
+				if (err) throw err;
+				callback();
+			});
+	});
+}
+
+function write_datastore(callback)
+{
+	try {
+		wallet.writeSync(walletdb_fn, program.pass);
+		callback();
+	} catch(e) {
+		console.error("Failed to write wallet:" + e);
+		callback(e);
+	}
+}
+
+function network_load(netname)
+{
+	wallet.setNetwork(netname);
+	network = wallet.network;
+}
+
+function wallet_load()
+{
+	wallet.readSync(walletdb_fn, program.pass);
+	network_load(wallet.datastore.network);
+}
+
+function peerdb_load()
+{
+	try {
+		peerdb = JSON.parse(fs.readFileSync(peerdb_fn));
+	} catch(d) {
+		console.warn('Unable to read peer db', peerdb_fn, 'creating new one.');
+		peerdb = [
+			{ ipv4: '127.0.0.1', port: 18333 },
+		];
+
+		fs.writeFileSync(peerdb_fn, JSON.stringify(peerdb));
+	}
+}
+
+function hdrdb_load()
+{
+	hdrdb = new HeaderDB({network: network});
+
+	try {
+		hdrdb.readFile(hdrdb_fn);
+	} catch(e) {
+		// do nothing
+	}
+}
+
+function cmd_init()
+{
+	if (program.args.length > 1)
+		network_load(program.args[1]);
+	else
+		network_load('livenet');
+
+	write_datastore(function(err) {});
+}
+
+function cmd_key_new()
+{
+	var newKey = new WalletKey({network: network});
+	newKey.generate();
+
+	var obj = newKey.storeObj();
+
+	wallet.addKey(obj);
+
+	write_datastore(function(err) {});
+
+	console.log(obj.addr.toString());
+}
+
+function cmd_sin_new()
+{
+	var newKey = new SINKey();
+	newKey.generate();
+
+	var obj = newKey.storeObj();
+
+	wallet.addSIN(obj);
+
+	write_datastore(function(err) {});
+
+	console.log(obj.sin);
+}
+
+function netsync_getheaders(info)
+{
+	var conn = info.conn;
+	var loc = hdrdb.locator();
+	conn.sendGetHeaders(loc, coinUtil.NULL_HASH);
+}
+
+function netsync_add_header(info, block)
+{
+	var hashStr = coinUtil.formatHashFull(block.calcHash());
+
+	try {
+		hdrdb.add(block);
+	} catch(e) {
+		var height = hdrdb.size();
+		console.log("HeaderDB failed adding block #" + height + ", " + hashStr);
+		console.log("   Reason: " + e);
+		return;
+	}
+
+	var height = hdrdb.size() - 1;
+	console.log("HeaderDB added block #" + height + ", " + hashStr);
+
+}
+
+function netsync_headers(info)
+{
+	var conn = info.conn;
+	var headers = info.message.headers;
+
+	headers.forEach(function(hdr) {
+		netsync_add_header(info, hdr);
+	});
+
+	netsync_getheaders(info);
+}
+
+function netsync_block(info)
+{
+	var block = info.message.block;
+	netsync_add_header(info, block);
+
+	if (syncState == 'init') {
+		syncState = 'headers';
+		netsync_getheaders(info);
+	}
+}
+
+function netsync_verack(info)
+{
+	var inv = {
+		type: CoinConst.MSG.BLOCK,
+		hash: network.genesisBlock.hash,
+	};
+	var invs = [ inv ];
+
+	info.conn.sendGetData(invs);
+}
+
+function netsync_connected(data)
+{
+	var peerman = data.pm;
+
+	console.log("netsync: Connected to (at least one) peer");
+}
+
+function cmd_netsync()
+{
+	var config = {
+		network: network.name
+	};
+	var PeerManager = require('bitcore/PeerManager').createClass({config: config});
+	var Peer = require('bitcore/Peer').class();
+
+	console.log("netsync begins");
+
+	var peerman = new PeerManager();
+
+	peerdb.forEach(function(datum) {
+		var peer = new Peer(datum.ipv4, datum.port);
+		peerman.addPeer(peer);
+	});
+
+	peerman.on('connection', function(conn) {
+		conn.on('verack', netsync_verack);
+		conn.on('block', netsync_block);
+		conn.on('headers', netsync_headers);
+	});
+	peerman.on('connect', function(data) {
+		netsync_connected(data);
+	});
+
+	peerman.start();
+}
+
+function filesync_block_buf(blkdir, fn, buf)
+{
+	var parser = new Parser(buf);
+	var block = new Block();
+	block.parse(parser, true);
+
+	var hashStr = coinUtil.formatHashFull(block.calcHash());
+
+	try {
+		hdrdb.add(block);
+	} catch(e) {
+		var height = hdrdb.size();
+		console.log("HeaderDB failed adding block #" + height + ", " + hashStr);
+		console.log("   Reason: " + e);
+		return;
+	}
+
+	var height = hdrdb.size() - 1;
+	if ((height % 1000) == 0)
+		console.log("HeaderDB added block #" + height + ", " + hashStr);
+}
+
+function filesync_open_cb(err, fd, blkdir, fn)
+{
+	if (err) throw err;
+
+	var hdrbuf = new Buffer(4 * 2);
+	while (1) {
+		// read 2x 32-bit header
+		var bread = fs.readSync(fd, hdrbuf, 0, 4 * 2, null);
+		if (bread < (4 * 2)) {
+			console.log("Short read/EOF, ending scan of " + fn);
+			break;
+		}
+
+		// check magic matches
+		var magic = hdrbuf.slice(0, 4);
+		if (magic.toString() != network.magic.toString()) {
+			console.log("Invalid network magic, ending scan of " + fn);
+			break;
+		}
+
+		// block size
+		var blkSize = hdrbuf.readUInt32LE(4);
+		if (blkSize > (1 * 1024 * 1024))
+			throw new Error("Invalid block size " + blkSize);
+
+		// read raw block data
+		var blkBuf = new Buffer(blkSize);
+		bread = fs.readSync(fd, blkBuf, 0, blkSize, null);
+		if (bread != blkSize)
+			throw new Error("Failed to read block");
+
+		// process block
+		filesync_block_buf(blkdir, fn, blkBuf);
+	}
+
+	fs.closeSync(fd);
+
+	hdrdb.writeFile(hdrdb_fn);
+	console.log("Wrote header db");
+}
+
+function filesync_block_file(blkdir, fn)
+{
+	console.log("Scanning " + fn + " for block data.");
+
+	var pathname = blkdir + '/' + fn;
+	fs.open(pathname, 'r', function (err, fd) {
+		filesync_open_cb(err, fd, blkdir, fn);
+	});
+}
+
+function cmd_filesync_rd(err, files, blkdir)
+{
+	if (err) throw err;
+
+	files = files.sort();
+
+	var scanned = 0;
+	files.forEach(function(fn) {
+		var re = /^blk\d+\.dat$/;
+		if (fn.match(re)) {
+			filesync_block_file(blkdir, fn);
+			scanned++;
+		}
+	});
+
+	console.log("Scanned " + scanned + " of " + files.length + " files in " + blkdir);
+}
+
+function cmd_filesync()
+{
+	if (program.args.length < 2) {
+		console.error("filesync: no directory specified");
+		return;
+	}
+
+	var blkdir = program.args[1];
+
+	fs.readdir(blkdir, function (err, files) {
+		cmd_filesync_rd(err, files, blkdir);
+	});
+}
+
+function main()
+{
+	if (program.args.length == 0) {
+		console.error("No command specified.");
+		list_commands();
+		return;
+	}
+
+	var cmd = program.args[0];
+	
+	if (cmd != 'init' && cmd != 'help' && cmd != 'clean') {
+		wallet_load();
+	}
+
+	peerdb_load();
+	hdrdb_load();
+
+	switch (cmd) {
+
+	case "filesync":
+		cmd_filesync();
+		break;
+
+	case "clean":
+		remove_datastore(function(err) {});
+		break;
+
+	case "dump":
+		console.dir(wallet.datastore);
+		break;
+
+	default:
+		console.error("Unknown command", cmd);
+		// fall through
+
+	case "help":
+		list_commands();
+		return;
+	
+	case "init":
+		cmd_init();
+		break;
+
+	case "key.new":
+		cmd_key_new();
+		break;
+
+	case "netsync":
+		cmd_netsync();
+		break;
+
+	case "sin.new":
+		cmd_sin_new();
+		break;
+	}
+}
+
+main();
+

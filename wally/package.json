@@ -1,0 +1,39 @@
+{
+  "name": "wally",
+  "description": "Bitcoin SPV wallet client",
+  "version": "0.0.2",
+  "author": {
+    "name": "Jeff Garzik",
+    "email": "jgarzik@bitpay.com"
+  },
+  "contributors": [
+    {
+      "name": "Stephen Pair",
+      "email": "stephen@bitpay.com"
+    }
+  ],
+  "main": "./index",
+  "bin": {
+    "wally": "./bin/wally"
+  },
+  "keywords": [
+    "bitcoin",
+    "wallet"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitpay/wally.git"
+  },
+  "scripts": {},
+  "engines": {
+    "node": ">=0.8"
+  },
+  "dependencies": {
+    "classtool": ">=1.0.0",
+    "optimist": ">=0.6.0",
+    "bitcore": ">=0.1.3",
+    "commander": ">=2.1.0"
+  },
+  "devDependencies": {},
+  "license": "MIT"
+}

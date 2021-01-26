@@ -1,0 +1,62 @@
+#!/usr/bin/env node
+// vi: ft=javascript
+
+var program = require('commander');
+
+function collect(val, items) {
+  items.push(val);
+  return items;
+};
+
+program
+  .version('0.0.1')
+  .option('-p, --port [number]', 'Port on which to listen for foxtrot peer connections')
+  .option('-c, --connect [host:port|port]', 'Foxtrot peers with which to connect', collect, [])
+  .option('-s, --server <address>', 'Foxtrot chat server address')
+  .option('-n, --nick [name]', 'Nickname to use [anon]', 'anon')
+  .parse(process.argv);
+
+if(!program.server) program.help();
+var serverPort = parseInt(program.port);
+
+var foxtrot = require('..');
+
+// not real happy about this API
+foxtrot.options = {
+  discovery: {
+    connect: program.connect,
+    tcpserver: {
+      port: serverPort || 9333,
+      seek: serverPort ? false : true,
+    },
+    file: {},
+    dnsseed: {},
+    zeroconf: {},
+    rumor: {},
+    reconnect: {},
+  }
+};
+
+foxtrot.on('peerConnect', function(peer) {
+  console.log('>>> connected to peer ('+peer.descriptorString()+')');
+});
+foxtrot.on('peerDisconnect', function(peer) {
+  console.log('>>> disconnected from peer ('+peer.descriptorString()+')');
+});
+
+var connected = false;
+var client = foxtrot.connect({address: new Buffer(program.server, 'hex')}, function() {
+  console.log('>>> connected to chat server');
+  connected = true;
+  client.write(program.nick);
+  process.stdin.pipe(client);
+  client.pipe(process.stdout);
+});
+client.on('error', function(err) {
+  console.error(err);
+  foxtrot.stop();
+});
+client.on('close', function() {
+  if(connected) console.log('>>> lost connection to chat server');
+  foxtrot.stop();
+});

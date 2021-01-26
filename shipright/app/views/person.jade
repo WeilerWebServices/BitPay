@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  h1
+    include partials/person
+    |  
+    small a craftsman of code
+
+  .profiles
+    each googleProfile in person.profiles.google
+      i.fa.fa-google-plus
+    else
+      a.btn.btn-default(href="/auth/google")
+        i.fa.fa-google-plus
+        |  Add Google Profile &raquo;
+
+  h2 Projects
+  ul.nav.nav-list
+    each project in projects
+      li
+        include partials/project

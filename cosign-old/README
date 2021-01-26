@@ -1,0 +1,130 @@
+
+Build bitcoin transactions
+--------------------------
+Usage: cosign [options] COMMAND [command parameters]
+
+Options:
+  -f, --file  Load/store transaction state to/from FILE
+
+
+Theory of operation
+-------------------
+All operation revolves around an internal database, which is modified
+via execution of a command operation:
+	1. cosign reads transaction state file (JSON). Default "txstatedb.json".
+	2. cosign executes command given on command line,
+	   updating transaction state.
+	3. cosign writes transaction state file, overwriting
+	   previous version.
+
+"transaction state" is anything involving the given transaction being
+built, examined or modified.
+
+A session begins when a new database is initialized, using the "init"
+command.
+
+
+Dependencies
+------------
+node.js			-- http://nodejs.org/
+
+node modules ("npm install $module_name"):
+	optimist
+	libcoin		-- https://github.com/gasteve/node-libcoin
+
+
+cosign command summary
+----------------------
+
+If the command notes "(RPC)", that indicates bitcoind wallet and RPC are used.
+If the command notes "(JSON)", that indicates a local, AES-encrypted
+JSON wallet file is used.
+
+clean
+	Remove transaction state database, and any associated
+	temporary files.
+
+dump
+	Inspect transaction state database.
+
+help
+	List this command summary.
+
+init
+	Initialize new transaction state database.
+
+inputs TXID1 VOUT1 TXID2 VOUT2...
+	Raw transaction building.  Append to list of TX inputs.
+
+inputs.clear
+	Clear list of TX inputs.
+
+multisig N-REQUIRED KEY1 KEY2 KEY3...
+	Begin new multi-sig tx
+
+nreq N-REQUIRED
+	Specify number of sigs required for a multisig tx
+
+outputs ADDRESS1 VALUE1 ADDRESS2 VALUE2...
+	Raw transaction building.  Append to list of TX outputs.
+
+outputs.clear
+	Clear list of TX outputs.
+
+pubkey.get ADDRESS
+
+	Obtain full pubkey, given bitcoin address (pubkey hash),
+	from bitcoind wallet (RPC) or local wallet file (JSON).
+
+pubkeys KEY1 KEY2 KEY3...
+	Append to list of pubkeys / bitcoin addresses
+
+pubkeys.clear
+	Clear list of pubkeys.
+
+raw SERIALIZED-TX
+	Input serialized transaction from command line
+
+raw.append FILE
+	Append FILE to in-memory serialized transaction data.
+
+raw.clear
+	Clear serialized tx data.
+
+raw.create
+	create raw transaction, given inputs and outputs.
+
+raw.decode
+	(RPC) decode raw transaction to readable JSON object.
+
+raw.get TXID
+	(RPC) get raw transaction, given hash txid.
+
+raw.read FILE
+	Input serialized transaction from file.
+
+raw.send
+	(RPC) broadcast raw transaction to network,
+	returning a transaction id.
+
+raw.sign [anyonecanpay]
+	(RPC) sign raw transaction, if possible.
+	Uses keys in bitcoind's wallet.
+
+	If the optional argument "anyonecanpay" is supplied,
+	outputs are locked, but third party inputs may change.
+
+raw.write FILE
+	Output serialized transaction to file.
+
+wallet.msig
+	(RPC, JSON) Commit in-memory multisig data (N-Required, Keys)
+	to wallet, returning a multisig payment address.
+
+
+Encryption (walletpassphrase) note
+----------------------------------
+The user is expected to authenticate with bitcoind RPC prior to using
+this tool, if this tool will require access to private keys for the
+operation (e.g. signing).
+
